@@ -5,30 +5,34 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
+import entity.Player;
 import tile.TileHandler;
 
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 	
+	//SCREEN SETTINGS
 	final int originalTileSize = 16; //Tiles are 16x16 pixels
 	final int scale = 3; //Scales the tiles by 3x
 	public final int tileSize = originalTileSize * scale; //Actual tile size
-	
 	public final int tilesPerCol = 16; //16 tiles displayed horizontally
 	public final int tilesPerRow = 12; //12 tiles displayed vertically
+	public final int screenWidth = tileSize * tilesPerCol; //48 * 16 = 768 pixels wide
+	public final int screenHeight = tileSize * tilesPerRow; //48 * 12 = 576 pixels tall
 	
-	final int screenWidth = tileSize * tilesPerCol; //48 * 16 = 768 pixels wide
-	final int screenHeight = tileSize * tilesPerRow; //48 * 12 = 576 pixels tall
+	//WORLD SETTINGS
+	public final int maxWorldCol = 50;
+	public final int maxWorldRow = 50;
+	public final int worldWidth = tileSize * maxWorldCol;
+	public final int worldHeight = tileSize * maxWorldRow;
 	
+	//FPS
 	Thread thread;
-	InputHandler userInput = new InputHandler();
-	
-	//int charVelocity = 4; //How many pixels the character's position will update on a key press
-	
 	int framesPerSecond = 60; //The game will update and render 60 times per second
 	
-	MainCharacter userCharacter = new MainCharacter(this, userInput);
+	InputHandler userInput = new InputHandler();
+	public Player player = new Player(this, userInput);
 	TileHandler tileHandler = new TileHandler(this);
 	
 	public GamePanel() {
@@ -78,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public void update() {
 		//Updates player's position based on key pressed
-		userCharacter.updatePlayerPos();
+		player.updatePlayerPos();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -87,7 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
 		Graphics2D g2 = (Graphics2D)g;
 		
 		tileHandler.draw(g2);
-		userCharacter.renderPlayer(g2);
+		player.renderPlayer(g2);
 		
 		g2.dispose(); //Frees memory used by the object
 	}

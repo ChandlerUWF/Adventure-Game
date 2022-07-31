@@ -1,46 +1,39 @@
-package launcher;
+package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class MainCharacter {
-	public int charPosX, charPosY;
-	public int charVelocity;
+import launcher.GamePanel;
+import launcher.InputHandler;
+
+public class Player extends Entity {
 	
 	GamePanel panel;
 	InputHandler userInput;
 	
-	public BufferedImage knightUp1, knightUp2, knightUp3, knightUp4, knightUp5, knightUp6, knightUp7, knightUp8,
-						knightDown1, knightDown2, knightDown3, knightDown4, knightDown5, knightDown6, knightDown7, knightDown8,
-						knightLeft1, knightLeft2, knightLeft3, knightLeft4, knightLeft5, knightLeft6, knightLeft7, knightLeft8, 
-						knightRight1, knightRight2, knightRight3, knightRight4, knightRight5, knightRight6, knightRight7, knightRight8;
-						
-	public String direction;
-	public int imageCount;
-	public int imageNum;
+	public final int screenX;
+	public final int screenY;
 	
-	public MainCharacter(GamePanel panel, InputHandler userInput) {
+	public Player(GamePanel panel, InputHandler userInput) {
 		this.panel = panel;
 		this.userInput = userInput;
-		charPosX = 250;
-		charPosY = 250;
-		charVelocity = 4;
-		direction = "down";
-		imageCount = 0;
-		imageNum = 1;
+		
+		screenX = panel.screenWidth / 2 - (panel.tileSize / 2);
+		screenY = panel.screenHeight / 2 - (panel.tileSize / 2);
+		
+		setDefaultValues();
 		getCharacterPics();
 	}
-	/*
+	
 	public void setDefaultValues() {
-		x = 100;
-		y = 100;
-		velocity = 4;
+		worldX = panel.tileSize * 23;
+		worldY = panel.tileSize * 21;
+		speed = 4;
+		direction = "down";
 	}
-	*/
 	
 	public void getCharacterPics() {
 		try {
@@ -91,19 +84,19 @@ public class MainCharacter {
 		if(userInput.upKey == true || userInput.downKey == true || userInput.leftKey == true || userInput.rightKey == true) {
 			if(userInput.upKey == true) {
 				direction = "up";
-				charPosY -= charVelocity; 
+				worldY -= speed; 
 			}
 			else if(userInput.downKey == true) {
 				direction = "down";
-				charPosY += charVelocity;
+				worldY += speed;
 			}
 			else if(userInput.leftKey == true) {
 				direction = "left";
-				charPosX -= charVelocity;
+				worldX -= speed;
 			}
 			else if(userInput.rightKey == true) {
 				direction = "right";
-				charPosX += charVelocity;
+				worldX += speed;
 			}
 			
 			imageCount++;
@@ -136,10 +129,10 @@ public class MainCharacter {
 			}
 		}
 	}
-	
+
 	public void renderPlayer(Graphics2D g2) {
 		BufferedImage image = null;
-		
+	
 		if(direction == "up") {
 			if(imageNum == 1) {
 				image = knightUp1;
@@ -245,7 +238,7 @@ public class MainCharacter {
 			}
 		}
 		
-		g2.drawImage(image, charPosX, charPosY, panel.tileSize, panel.tileSize, null);
+		g2.drawImage(image, screenX, screenY, panel.tileSize, panel.tileSize, null);
 		
 		/*
 		g2.setColor(Color.blue);
